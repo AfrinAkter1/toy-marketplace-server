@@ -10,7 +10,7 @@ app.use(express.json());
 
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
-console.log(process.env.SECRET_PASS, process.env.SECRET_USER)
+
 const uri = `mongodb+srv://${process.env.SECRET_USER}:${process.env.SECRET_PASS}@cluster0.wcry9bp.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -26,6 +26,15 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+    const toyCollection = client.db('toyDB').collection('cars')
+    
+    app.post('/allcars',async (req, res) => {
+       const cars = req.body;
+       console.log(cars)
+       const result = await toyCollection.insertOne(cars)
+       res.send(result)
+    })
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
