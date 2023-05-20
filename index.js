@@ -9,7 +9,7 @@ app.use(express.json());
 
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const uri = `mongodb+srv://${process.env.SECRET_USER}:${process.env.SECRET_PASS}@cluster0.wcry9bp.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -48,6 +48,10 @@ async function run() {
       const result = await toyCollection.find(query).toArray()
       res.send(result)
     })
+
+
+
+
    app.get('/allcars/searchAll/:text', async(req, res) =>{
     const searchText = req.params.text;
     
@@ -68,7 +72,12 @@ async function run() {
     })
 
 
-
+   app.delete('/allcars/:id', async(req, res) =>{
+    const id = req.params.id;
+    const query = {_id: new ObjectId(id)  };
+    const result = await toyCollection.deleteOne(query);
+    res.send(result)
+   })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
