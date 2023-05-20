@@ -39,12 +39,30 @@ async function run() {
        res.send(result)
     })
     
-    app.get('/allCars',async (req, res) =>{
+    app.get('/allcars',async (req, res) =>{
       console.log(req.query.carType)
       let query = {}
       if(req.query?.carType){
         query ={carType: req.query.carType}
       }
+      const result = await toyCollection.find(query).toArray()
+      res.send(result)
+    })
+   app.get('/allcars/searchAll/:text', async(req, res) =>{
+    const searchText = req.params.text;
+    
+    const result = await toyCollection.find({
+      $or: [
+        {toyName: {$regex: searchText, $options: "i"}}
+      ]
+    }).toArray()
+    res.send(result)
+   })
+
+    app.get('/allcars/:sellerEmail',async (req, res) =>{
+      const email = req.params.sellerEmail;
+      console.log(email)
+      const query = {sellerEmail : email}
       const result = await toyCollection.find(query).toArray()
       res.send(result)
     })
