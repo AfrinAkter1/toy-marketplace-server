@@ -40,7 +40,7 @@ async function run() {
     })
     
     app.get('/allcars',async (req, res) =>{
-      console.log(req.query.carType)
+     
       let query = {}
       if(req.query?.carType){
         query ={carType: req.query.carType}
@@ -50,7 +50,28 @@ async function run() {
     })
 
 
+    app.get("/alltoys/:id" , async(req , res)=>{
+      const id =req.params.id 
+      const query = { _id :new ObjectId(id)};
+      const result = await toyCollection.findOne(query);
+      res.send(result)
+    })
 
+    app.put('/alltoys/:id', async(req, res) =>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)}
+      const options = {upsert: true}
+      const updateToy = req.body;
+      const toyDoc = {
+        $set: {
+          price: updateToy.price,
+          quantity: updateToy.quantity,
+          details: updateToy.details
+        }
+      }
+      const result = await toyCollection.updateOne(filter, toyDoc, options)
+      res.send(result)
+    })
 
    app.get('/allcars/searchAll/:text', async(req, res) =>{
     const searchText = req.params.text;
@@ -65,7 +86,7 @@ async function run() {
 
     app.get('/allcars/:sellerEmail',async (req, res) =>{
       const email = req.params.sellerEmail;
-      console.log(email)
+      // console.log(email)
       const query = {sellerEmail : email}
       const result = await toyCollection.find(query).toArray()
       res.send(result)
@@ -78,6 +99,13 @@ async function run() {
     const result = await toyCollection.deleteOne(query);
     res.send(result)
    })
+ 
+
+
+  
+  
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
