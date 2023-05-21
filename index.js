@@ -31,7 +31,7 @@ async function run() {
     //   const result = await toyCollection.find().toArray()
     //   res.send(result)
     // })
-
+    
     app.post('/allcars',async (req, res) => {
        const cars = req.body;
        console.log(cars)
@@ -56,6 +56,19 @@ async function run() {
       const result = await toyCollection.findOne(query);
       res.send(result)
     })
+
+
+
+    app.get('/allmytoy/:email/lowPrice', async(req, res) =>{
+      
+      // de
+      const email = req.params.email;
+      const query = {sellerEmail :  email}
+      const result = await toyCollection.find(query).sort({price: -1}).toArray()
+      res.send(result)
+     })
+
+
 
     app.put('/alltoys/:id', async(req, res) =>{
       const id = req.params.id;
@@ -83,6 +96,9 @@ async function run() {
     }).toArray()
     res.send(result)
    })
+   
+
+ 
 
     app.get('/allcars/:sellerEmail',async (req, res) =>{
       const email = req.params.sellerEmail;
