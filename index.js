@@ -25,22 +25,23 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    client.connect();
     const toyCollection = client.db('toyDB').collection('cars')
-    // app.get('/allCars',async (req, res) =>{
-    //   const result = await toyCollection.find().toArray()
-    //   res.send(result)
-    // })
     
+    // post in add a toy server page
     app.post('/allcars',async (req, res) => {
        const cars = req.body;
        console.log(cars)
        const result = await toyCollection.insertOne(cars)
        res.send(result)
     })
-    
-    app.get('/allcars',async (req, res) =>{
      
+
+
+
+
+    // get data
+    app.get('/allcars',async (req, res) =>{
       let query = {}
       if(req.query?.carType){
         query ={carType: req.query.carType}
@@ -49,7 +50,10 @@ async function run() {
       res.send(result)
     })
 
+    
 
+
+    // specific data find use id
     app.get("/alltoys/:id" , async(req , res)=>{
       const id =req.params.id 
       const query = { _id :new ObjectId(id)};
@@ -58,10 +62,12 @@ async function run() {
     })
 
 
+
+
+
+
  // descending
     app.get('/allmytoy/:email/lowPrice', async(req, res) =>{
-      
-     
       const email = req.params.email;
       const query = {sellerEmail :  email}
       const result = await toyCollection.find(query).sort({price: -1}).toArray()
@@ -70,10 +76,10 @@ async function run() {
 
 
 
+
+
  // esacending
     app.get('/allmytoy/:email/highPrice', async(req, res) =>{
-      
-     
       const email = req.params.email;
       const query = {sellerEmail :  email}
       const result = await toyCollection.find(query).sort({price: 1}).toArray()
@@ -82,6 +88,11 @@ async function run() {
 
 
 
+
+
+
+
+// update data
     app.put('/alltoys/:id', async(req, res) =>{
       const id = req.params.id;
       const filter = {_id: new ObjectId(id)}
@@ -98,9 +109,12 @@ async function run() {
       res.send(result)
     })
 
+
+
+
+    // all car page in search data
    app.get('/allcars/searchAll/:text', async(req, res) =>{
     const searchText = req.params.text;
-    
     const result = await toyCollection.find({
       $or: [
         {toyName: {$regex: searchText, $options: "i"}}
@@ -111,16 +125,17 @@ async function run() {
    
 
  
-
+ // specific data find use email
     app.get('/allcars/:sellerEmail',async (req, res) =>{
       const email = req.params.sellerEmail;
-      // console.log(email)
       const query = {sellerEmail : email}
       const result = await toyCollection.find(query).toArray()
       res.send(result)
     })
 
 
+
+    // delete data
    app.delete('/allcars/:id', async(req, res) =>{
     const id = req.params.id;
     const query = {_id: new ObjectId(id)  };
@@ -135,7 +150,7 @@ async function run() {
 
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+     client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
