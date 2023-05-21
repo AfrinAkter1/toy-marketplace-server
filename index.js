@@ -58,13 +58,25 @@ async function run() {
     })
 
 
-
+ // descending
     app.get('/allmytoy/:email/lowPrice', async(req, res) =>{
       
-      // de
+     
       const email = req.params.email;
       const query = {sellerEmail :  email}
       const result = await toyCollection.find(query).sort({price: -1}).toArray()
+      res.send(result)
+     })
+
+
+
+ // esacending
+    app.get('/allmytoy/:email/highPrice', async(req, res) =>{
+      
+     
+      const email = req.params.email;
+      const query = {sellerEmail :  email}
+      const result = await toyCollection.find(query).sort({price: 1}).toArray()
       res.send(result)
      })
 
